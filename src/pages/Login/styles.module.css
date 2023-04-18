@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 736px;
+  height: 736px;
+
+  margin: 0 auto;
+}
+
+.container input {
+  width: 150px;
+  margin: 8px;
+}
+
+.container button {
+  padding: 16px;
+  margin: 8px;
+}
