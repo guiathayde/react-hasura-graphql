@@ -1,11 +1,14 @@
 import { FormEvent, useCallback, useState } from 'react';
-import { useCookies } from 'react-cookie';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+import { useAuth } from '../../hooks/auth';
 
 import styles from './styles.module.css';
 
 export function Login() {
-  const [cookies, setCookies] = useCookies(['hasura-token']);
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,20 +17,34 @@ export function Login() {
     async (event: FormEvent) => {
       event.preventDefault();
 
-      const response = await axios.post(
-        'http://auth.pv4.ubv:8111/login',
-        {
-          email,
-          password,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
+      try {
+        const response = await axios.post(
+          'http://auth.pv4.ubv:8111/login',
+          {
+            email,
+            password,
           },
-        }
-      );
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
 
-      console.log(response.data);
+        console.log(response.data);
+
+        const { account_id } = response.data;
+
+        setUser({
+          account_id,
+          email,
+        });
+
+        navigate('/querys');
+      } catch (error) {
+        alert('Erro ao fazer login: ' + String(error));
+        console.error(error);
+      }
     },
     [email, password]
   );

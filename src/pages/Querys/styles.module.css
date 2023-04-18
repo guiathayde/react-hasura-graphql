@@ -3,3 +3,11 @@
   align-items: center;
   justify-content: center;
 }
+
+.logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 16px 24px;
+}
