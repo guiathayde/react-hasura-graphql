@@ -31,8 +31,6 @@ export function Querys() {
         cache: new InMemoryCache(),
         headers: {
           'Content-Type': 'application/json',
-          'x-hasura-admin-secret': 'admin',
-          'x-hasura-account-id': user ? String(user.account_id) : '1',
           'x-hasura-role': 'common',
         },
       }),
@@ -46,9 +44,11 @@ export function Querys() {
       .query({
         query: GET_ACCOUNTS,
       })
-      .then(({ data }) => {
-        setAccounts(data.v4_account);
-      });
+      .then((response) => {
+        console.log(response);
+        setAccounts(response.data.v4_account);
+      })
+      .catch((error) => console.log(error));
   }, []);
 
   return (
