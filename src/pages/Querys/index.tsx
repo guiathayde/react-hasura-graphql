@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { gql, ApolloClient, InMemoryCache } from '@apollo/client';
+import {
+  gql,
+  createHttpLink,
+  ApolloClient,
+  InMemoryCache,
+} from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../../hooks/auth';
@@ -21,21 +26,24 @@ const GET_ACCOUNTS = gql`
 `;
 
 export function Querys() {
-  const { user, setUser } = useAuth();
+  const { setUser } = useAuth();
   const navigate = useNavigate();
 
-  const client = useMemo(
-    () =>
-      new ApolloClient({
-        uri: 'http://hasura.pv4.ubv:8080/v1/graphql',
-        cache: new InMemoryCache(),
-        headers: {
-          'Content-Type': 'application/json',
-          'x-hasura-role': 'common',
-        },
-      }),
-    []
-  );
+  const client = useMemo(() => {
+    const link = createHttpLink({
+      uri: 'http://hasura.pv4.ubv:8080/v1/graphql',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-hasura-role': 'common',
+      },
+      credentials: 'include',
+    });
+
+    return new ApolloClient({
+      cache: new InMemoryCache(),
+      link,
+    });
+  }, []);
 
   const [accounts, setAccounts] = useState<Account[]>([]);
 
